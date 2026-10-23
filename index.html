@@ -312,7 +312,12 @@ function fit() {
   root.style.transform = 'scale(' + s + ')';
   root.style.left = Math.round((window.innerWidth - 1920 * s) / 2) + 'px';
   root.style.top = Math.round((window.innerHeight - 1080 * s) / 2) + 'px';
+  if (/debug/.test(location.search)) {
+    $('credit').textContent = 'vp ' + window.innerWidth + 'x' + window.innerHeight + ' dpr ' + window.devicePixelRatio +
+      ' scale ' + s.toFixed(3) + ' screen ' + screen.width + 'x' + screen.height;
+  }
 }
+window.onerror = function (m, src, line) { if (/debug/.test(location.search)) $('credit').textContent = 'ERR ' + m + ' @' + line; };
 window.addEventListener('resize', fit);
 fit();
 
