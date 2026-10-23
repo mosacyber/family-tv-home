@@ -25,7 +25,9 @@
     --sans: 'Thmanyah Sans', 'IBM Plex Sans Arabic', sans-serif;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { width: 1920px; height: 1080px; overflow: hidden; background: #d9cdb6; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #d9cdb6; }
+  /* Laid out at 1920x1080 and scaled to the real viewport (VIDAA apps run at 1280x720). */
+  #root { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; }
   body { font-family: var(--sans); color: var(--ink); font-feature-settings: 'salt' 1; }
 
   #sheet {
@@ -102,6 +104,7 @@
 </style>
 </head>
 <body>
+<div id="root">
 <div id="sheet">
   <div class="mast">
     <div class="box"><b id="issue">العدد —</b><span>الطبعة اليومية</span></div>
@@ -140,6 +143,7 @@
   </div>
 
   <div class="foot"><span id="credit"></span><span>بيانات الطقس من Open-Meteo · الصور من Wikimedia Commons</span></div>
+</div>
 </div>
 <div id="dim"></div>
 
@@ -301,6 +305,16 @@ var idle;
 function wake() { $('dim').style.opacity = 0; clearTimeout(idle); idle = setTimeout(function () { $('dim').style.opacity = .5; }, 3600 * 1000); }
 var shifts = [[0, 0], [5, 3], [-5, 3], [5, -3], [-5, -3]], si = 0;
 setInterval(function () { si = (si + 1) % shifts.length; $('sheet').style.transform = 'translate(' + shifts[si][0] + 'px,' + shifts[si][1] + 'px)'; }, 60000);
+
+function fit() {
+  var s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+  var root = $('root');
+  root.style.transform = 'scale(' + s + ')';
+  root.style.left = Math.round((window.innerWidth - 1920 * s) / 2) + 'px';
+  root.style.top = Math.round((window.innerHeight - 1080 * s) / 2) + 'px';
+}
+window.addEventListener('resize', fit);
+fit();
 
 tick(); setInterval(tick, 10000);
 loadWeather(); setInterval(loadWeather, 30 * 60 * 1000);
