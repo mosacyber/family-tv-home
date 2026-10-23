@@ -84,6 +84,7 @@
   .yt .lbl { flex: 1; background: var(--paper-2); align-self: stretch; display: flex; align-items: center; justify-content: center;
              font-family: var(--serif); font-weight: 700; font-size: 40px; color: var(--ink); border-left: 2px solid var(--rule); }
   .yt:focus { box-shadow: 0 0 0 5px var(--brown); }
+  .hint { font-size: 18px; color: var(--ink-soft); margin-top: 8px; text-align: center; }
   .yt:focus .lbl { background: var(--brown); color: var(--paper); }
 
   .sec { font-family: var(--serif); font-weight: 700; font-size: 34px; color: var(--brown-dark); display: flex; justify-content: space-between;
@@ -130,6 +131,7 @@
         <span class="logo"><svg viewBox="0 0 28 20"><path fill="#FF0000" d="M27.4 3.1A3.5 3.5 0 0 0 25 .6C22.8 0 14 0 14 0S5.2 0 3 .6A3.5 3.5 0 0 0 .6 3.1C0 5.3 0 10 0 10s0 4.7.6 6.9A3.5 3.5 0 0 0 3 19.4C5.2 20 14 20 14 20s8.8 0 11-.6a3.5 3.5 0 0 0 2.4-2.5c.6-2.2.6-6.9.6-6.9s0-4.7-.6-6.9z"/><path fill="#fff" d="M11.2 14.3 18.5 10l-7.3-4.3z"/></svg>YouTube</span>
         <span class="lbl">شاهد يوتيوب</span>
       </button>
+      <div class="hint">أو اضغط زر YouTube في الريموت</div>
     </div>
 
     <div class="col">
@@ -150,7 +152,6 @@
 <script>
 var LAT = 26.4207, LNG = 50.0888, TZ = 3;   // Dammam
 var PHOTO_SECONDS = 30;
-var YT_URLS = ['pkgapp://tv.vidaa.app.youtube/apps/start_youtube.sh', 'https://www.youtube.com/tv'];
 
 var AR = '٠١٢٣٤٥٦٧٨٩';
 function ar(n) { return String(n).replace(/[0-9]/g, function (d) { return AR[d]; }); }
@@ -288,14 +289,10 @@ function loadPhotos() {
 }
 
 /* ---------- YouTube ---------- */
+// VIDAA gives web apps no way to launch another app (pkgapp:// navigation shows a network error page),
+// so close this app: the cleaned-up VIDAA home opens with YouTube as the first "recent" tile.
 function openYouTube() {
-  try { if (window.Hisense_launchApp) { window.Hisense_launchApp('YouTube'); return; } } catch (e) {}
-  var i = 0;
-  (function tryNext() {
-    if (i >= YT_URLS.length) return;
-    location.href = YT_URLS[i++];
-    setTimeout(function () { if (document.visibilityState === 'visible') tryNext(); }, 2000);
-  })();
+  try { window.close(); } catch (e) {}
 }
 $('yt').onclick = openYouTube;
 document.addEventListener('keydown', function (e) { wake(); if (e.keyCode === 13) { openYouTube(); e.preventDefault(); } });
